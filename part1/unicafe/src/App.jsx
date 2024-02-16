@@ -1,14 +1,27 @@
 import { React, useState } from 'react'
 
+const Statistics = (props) => {
+    return (
+        <div>
+            <Display text={props.text} stats={props.stats} />
+        </div>
+    )
+}
+
 const Button = (props) => {
     return (
         <button onClick={props.handleClick}>{props.text}</button>
     )
 }
 const Display = (props) => {
-    return (
-        <p>{props.text} {props.count}</p>
-    )
+        if(props.text === 'positive') {
+            return (
+                <p>{props.text} {props.stats}%</p>
+            )
+        }
+        return (
+            <p>{props.text} {props.stats}</p>
+        )
 }
 const App = () => {
 
@@ -25,6 +38,12 @@ const App = () => {
     const [good, setGood] = useState(0)
     const [neutral, setNeutral] = useState(0)
     const [bad, setBad] = useState(0)
+    const sumFeed = good + bad + neutral
+    const avgFeed = sumFeed / 3
+    const posFeed = () => {
+        if (sumFeed === 0) return 0
+        return (good / sumFeed) * 100
+    }
 
     return(
         <div>
@@ -32,12 +51,13 @@ const App = () => {
             <Button text='good' handleClick={handleGood} />
             <Button text='neutral' handleClick={handleNeutral} />
             <Button text='bad' handleClick={handleBad} />
-            <h2>statistic</h2>
-            <Display text='good' count={good} />
-            <Display text='neutral' count={neutral} />
-            <Display text='bad' count={bad} />
-
-
+            <h2>Statistics</h2>
+            <Statistics text='good' stats={good}/>
+            <Statistics text='neutral' stats={neutral}/>
+            <Statistics text='bad' stats={bad}/>
+            <Statistics text='all' stats={sumFeed}/>
+            <Statistics text='average' stats={avgFeed}/>
+            <Statistics text = 'positive' stats={posFeed()}/>
         </div>
     )
 }
