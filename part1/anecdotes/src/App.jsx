@@ -32,7 +32,6 @@ const App = () => {
          setVotes(prevVotes => {
             const copy = {...prevVotes}
             copy[selected] = prevVotes[selected] + 1
-            console.log(copy)
             return copy
          })
     }
