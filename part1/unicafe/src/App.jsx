@@ -1,14 +1,34 @@
 import { React, useState } from 'react'
 
-const Statistics = (props) => {
-        if(props.text === 'positive') {
-            return (
-                <p>{props.text} {props.stats}%</p>
-            )
-        }
+const StatisticLine = (props) => {
+    if(props.text === 'positive') {
         return (
-            <p>{props.text} {props.stats}</p>
+            <p>{props.text} {props.value}%</p>
         )
+    }
+    return (
+        <p>{props.text} {props.value}</p>
+    )
+
+}
+
+const Statistics = (props) => {
+    const sumFeed = props.stats.good + props.stats.bad + props.stats.neutral
+    const avgFeed = sumFeed / 3
+    const posFeed = () => {
+        if (sumFeed === 0) return 0
+        return (props.stats.good / sumFeed) * 100
+    }
+    return (
+      <div>
+        <StatisticLine text="good" value ={props.stats.good} />
+        <StatisticLine text="neutral" value={props.stats.neutral} />
+        <StatisticLine text="bad" value ={props.stats.bad} />
+        <StatisticLine text="all" value={sumFeed} />
+        <StatisticLine text="average" value={avgFeed} />
+        <StatisticLine text="positive" value={posFeed()} />
+    </div>
+    )
 }
 
 const Button = (props) => {
@@ -31,11 +51,10 @@ const App = () => {
     const [good, setGood] = useState(0)
     const [neutral, setNeutral] = useState(0)
     const [bad, setBad] = useState(0)
-    const sumFeed = good + bad + neutral
-    const avgFeed = sumFeed / 3
-    const posFeed = () => {
-        if (sumFeed === 0) return 0
-        return (good / sumFeed) * 100
+    const stats = {
+        good: good,
+        bad: bad,
+        neutral: neutral
     }
     if (good === 0 && bad === 0 && neutral === 0) {
         return (
@@ -57,12 +76,7 @@ const App = () => {
             <Button text='neutral' handleClick={handleNeutral} />
             <Button text='bad' handleClick={handleBad} />
             <h2>Statistics</h2>
-            <Statistics text='good' stats={good}/>
-            <Statistics text='neutral' stats={neutral}/>
-            <Statistics text='bad' stats={bad}/>
-            <Statistics text='all' stats={sumFeed}/>
-            <Statistics text='average' stats={avgFeed}/>
-            <Statistics text = 'positive' stats={posFeed()}/>
+            <Statistics stats={stats}/>
         </div>
     )
 }
