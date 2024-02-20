@@ -12,17 +12,17 @@ const Part = ({ part }) => {
 
 }
 
-const Content = ({ parts }) => {
+const Content = ({ parts, name }) => {
     const mappedParts = parts.map(part => <Part key={part.id} part={part}/>)
     return (
         <> 
+            <Header name={name}/>
             {mappedParts}
             <Total parts={parts}/>
         </>
     )
 
 }
-
 const Total = ({parts}) => {
     const totalExercises = parts.reduce((sum, parts) => {
         return sum + parts.exercises
@@ -31,40 +31,71 @@ const Total = ({parts}) => {
         <p>Total of {totalExercises} exercises</p>
     ) 
 }
-const Course = ({course}) => {
+const Course = (props) => {
+    const mappedCourses = props.course.map(course => {
+        return (
+            <Content 
+                    key={course.id} 
+                    parts={course.parts} 
+                    name={course.name}
+            />
+        )
+    })
     return (
         <>
-            <Header name={course.name}/>
-            <Content parts={course.parts}/>
-            
+            {mappedCourses}
         </>
         )
-}
+    }
+
 
 const App = () => {
-    const course = {
-        id: 1,
-        name: 'Half Stack application development',
-        parts: [
-            {
-                name: 'Fundamentals of React',
-                exercises: 10,
-                id: 1
-            },
-            {
-                name: 'Using props to pass data',
-                exercises: 7,
-                id: 2
-            },
-            {
-                name: 'State of a component',
-                exercises: 14,
-                id: 3
-            }
-        ]
+    const courses = [
+    {
+      name: 'Half Stack application development',
+      id: 1,
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
+      ]
+    }, 
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
     }
+  ]
     
-    return <Course course={course}/>
+    return <Course course={courses}/>
 }
 
 
