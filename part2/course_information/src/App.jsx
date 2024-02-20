@@ -11,20 +11,32 @@ const Part = ({ part }) => {
     )
 
 }
+
 const Content = ({ parts }) => {
-    const mappedParts = parts.map(part => < Part key={part.id} part={part}/>)
+    const mappedParts = parts.map(part => <Part key={part.id} part={part}/>)
     return (
         <> 
             {mappedParts}
+            <Total parts={parts}/>
         </>
     )
 
+}
+
+const Total = ({parts}) => {
+    const totalExercises = parts.reduce((sum, parts) => {
+        return sum + parts.exercises
+    }, 0)
+   return (
+        <p>Total of {totalExercises} exercises</p>
+    ) 
 }
 const Course = ({course}) => {
     return (
         <>
             <Header name={course.name}/>
             <Content parts={course.parts}/>
+            
         </>
         )
 }
