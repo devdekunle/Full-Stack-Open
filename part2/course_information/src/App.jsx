@@ -2,8 +2,6 @@ import { useState } from 'react'
 import React from 'react'
 import Course from './components/Course'
 
-
-
 const App = () => {
     const courses = [
     {
