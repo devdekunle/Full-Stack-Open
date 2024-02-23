@@ -49,14 +49,12 @@ const App = () => {
 
 
   useEffect(()=> {
-    console.log('checking useEffect')
     axios
         .get('http://localhost:3001/persons')
         .then(response => {
           setPersons(response.data)
         })
   }, [])
-  console.log('persons are', persons.length, 'people')
   const handleSubmit = (event) => {
     event.preventDefault()
     const checkName = persons.find(person => person.name === newName)
