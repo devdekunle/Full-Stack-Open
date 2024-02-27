@@ -16,6 +16,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [showFilter, setShowFilter] = useState([])
   const [message, setMessage] = useState(null)
+  const [messageStatus, setMessageStatus] = useState(true)
 
 
   useEffect(() => {
@@ -39,10 +40,21 @@ const App = () => {
                     .updatePhone(existingUser.id, {...existingUser, number:newNumber})
                     .then(response => {
                       setPersons(persons.map(person => person.id !== existingUser.id ? person : response))
+                      setMessageStatus(true)
                       setMessage(`Updated ${existingUser.name}'s number`)
                       setTimeout(() => {
                         setMessage(null)
                       }, 5000)
+                      setNewName('')
+                      setNewNumber('')
+                    })
+                    .catch(error => {
+                      setMessageStatus(false)
+                      setMessage(`Information of ${existingUser.name} has been already been removed from the server`)
+                      setTimeout(() => {
+                        setMessage(null)
+                      }, 5000)
+                      setPersons(persons.filter(person => person.id !== existingUser.id))
                       setNewName('')
                       setNewNumber('')
                     })
@@ -88,11 +100,24 @@ const App = () => {
       dbStorage
         .deletePhone(id)
         .then(response => {
+          setMessageStatus(true)
           setMessage(`Deleted ${response.data.name}`)
           setTimeout(() => {
             setMessage(null)
           }, 5000)
           setPersons(persons.filter(person => person.id !== response.data.id))
+        })
+        .catch(error => {
+          console.log(error)
+          setMessageStatus(false)
+          setMessage(`information of ${deletePerson.name} has already been removed from the server`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+          setPersons(persons.filter(person => person.id !== deletePerson.id))
+          setNewName('')
+          setNewNumber('') 
+
         })    
     }
   }
@@ -102,7 +127,7 @@ const App = () => {
   return (
       <div>
         <h2>Phonebook</h2>
-        <Notification message={message}/>
+        <Notification message={message} isSuccess={messageStatus}/>
         <Filter onChange={handleFilterPerson} newFilter={newFilter}/>
         <h2>add a new</h2>
         <PersonForm 

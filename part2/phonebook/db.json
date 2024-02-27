@@ -1,39 +1,24 @@
 {
   "persons": [
     {
-      "name": "Abraham Samuel",
-      "number": "09030684139",
-      "id": "95d2"
-    },
-    {
-      "id": "c0b5",
-      "name": "Lydia Abraham",
-      "number": "08065507412"
-    },
-    {
-      "id": "e8b2",
-      "name": "Barr Abraham Ayo Olaniran",
-      "number": "08039562073"
-    },
-    {
       "id": "0e57",
       "name": "Mrs Grace Olaniran",
       "number": "08037020134"
     },
     {
-      "id": "5920",
+      "id": "d5a8",
+      "name": "Lydia Abraham",
+      "number": "08065507412"
+    },
+    {
+      "id": "0523",
+      "name": "Barr Ayo Olaniran",
+      "number": "08039562073"
+    },
+    {
+      "id": "9953",
       "name": "Chiamaka Izukanne",
       "number": "09030705735"
-    },
-    {
-      "id": "c5f2",
-      "name": "Apostle Joshson",
-      "number": "3254362"
-    },
-    {
-      "id": "de5d",
-      "name": "Mr Topsy Essien",
-      "number": "08188882200"
     }
   ]
 }
