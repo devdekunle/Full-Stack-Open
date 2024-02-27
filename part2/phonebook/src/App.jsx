@@ -67,21 +67,36 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    const checkName = persons.find(person => person.name === newName)
-    checkName ?
-      alert(`${newName} is already added to the phonebook`) :
-      dbStorage
-          .createPhone({ 
-            name:newName,
-            number:newNumber
-          })
-          .then(response => {
-            setPersons(persons.concat(response))
-            setNewName('')
-            setNewNumber('')
-          })
-             
-  }
+    const existingUser = persons.find(person => person.name === newName)
+      if(existingUser) {
+          if (existingUser.name === newName && existingUser.number === newNumber) {
+            alert(`${newName} is already added to the phonebook`)
+          }  
+          else if (existingUser.name === newName && existingUser.number !== newNumber){
+              if (window.confirm(`${existingUser.name} is already added to the phonebook, replace the old number with a new one?`)) {
+                dbStorage
+                    .updatePhone(existingUser.id, {name:newName, number:newNumber})
+                    .then(response => {
+                      setPersons(persons.map(person => person.id !== existingUser.id ? person : response))
+                      setNewName('')
+                      setNewNumber('')
+                    })
+              }
+          }
+      }
+      else {
+        dbStorage
+            .createPhone({ 
+              name:newName,
+              number:newNumber
+            })
+            .then(response => {
+              setPersons(persons.concat(response))
+              setNewName('')
+              setNewNumber('')
+            })
+     }        
+}
 
   const handleNameChange = (e) => {
     setNewName(e.target.value)

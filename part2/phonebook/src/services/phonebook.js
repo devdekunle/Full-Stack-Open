@@ -20,4 +20,5 @@ const deletePhone = (id) => {
 	const request = axios.delete(`${url}/${id}`)
 	return request.then(response => response)
 }
+
 export default {getPhone, createPhone, updatePhone, deletePhone}
