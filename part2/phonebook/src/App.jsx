@@ -2,59 +2,20 @@ import { useState, useEffect } from 'react'
 import React from 'react'
 import axios from 'axios'
 import dbStorage from './services/phonebook'
+import Filter from './components/Filter'
+import Input from './components/Input'
+import PersonForm from './components/PersonForm'
+import Person from './components/Person'
+import Notification from './components/Notification'
 
-const Filter = (props) => {
-  return (
-      <div>Filter shown with
-            <input type="text" value={props.newFilter} onChange={props.onChange}/>
-      </div>
-    )
-} 
 
-const Input = (props) => {
-  return (
-      <div>
-            {props.type}: <input value={props.value} onChange={props.handleChange}/>
-      </div>
-    )
-}
-const PersonForm = (props) => {
-  return (
-      <form onSubmit={props.onSubmit}>
-          <Input type="name" value={props.newName} handleChange={props.handleNameChange}/>
-          <Input type="number" value={props.newNumber} handleChange={props.handleNumberChange}/>
-          <div>
-            <button type='submit'>add</button>
-          </div>
-      </form>
-    )
-}
-
-const Person = (props) => {
-
-  return (
-      <div>
-          {props.toShow.map(person => {
-              return( 
-                    <div key={person.id}>
-                      <p> 
-                        {person.name} {person.number}
-                      </p>
-                      <button onClick={() => props.handleDelete(person.id)}>delete</button>
-                    </div>
-                    )
-          })
-                    
-          }
-      </div>
-    )
-}
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [showFilter, setShowFilter] = useState([])
+  const [message, setMessage] = useState(null)
 
 
   useEffect(() => {
@@ -75,9 +36,13 @@ const App = () => {
           else if (existingUser.name === newName && existingUser.number !== newNumber){
               if (window.confirm(`${existingUser.name} is already added to the phonebook, replace the old number with a new one?`)) {
                 dbStorage
-                    .updatePhone(existingUser.id, {name:newName, number:newNumber})
+                    .updatePhone(existingUser.id, {...existingUser, number:newNumber})
                     .then(response => {
                       setPersons(persons.map(person => person.id !== existingUser.id ? person : response))
+                      setMessage(`Updated ${existingUser.name}'s number`)
+                      setTimeout(() => {
+                        setMessage(null)
+                      }, 5000)
                       setNewName('')
                       setNewNumber('')
                     })
@@ -92,6 +57,10 @@ const App = () => {
             })
             .then(response => {
               setPersons(persons.concat(response))
+              setMessage(`Added ${response.name}`)
+              setTimeout(() => {
+                setMessage(null)
+              }, 5000)
               setNewName('')
               setNewNumber('')
             })
@@ -119,8 +88,11 @@ const App = () => {
       dbStorage
         .deletePhone(id)
         .then(response => {
+          setMessage(`Deleted ${response.data.name}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
           setPersons(persons.filter(person => person.id !== response.data.id))
-          alert('delete successful')
         })    
     }
   }
@@ -130,6 +102,7 @@ const App = () => {
   return (
       <div>
         <h2>Phonebook</h2>
+        <Notification message={message}/>
         <Filter onChange={handleFilterPerson} newFilter={newFilter}/>
         <h2>add a new</h2>
         <PersonForm 
