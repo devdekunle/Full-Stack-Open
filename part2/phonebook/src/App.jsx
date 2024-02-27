@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import React from 'react'
 import axios from 'axios'
+import dbStorage from './services/phonebook'
 
 const Filter = (props) => {
   return (
@@ -30,12 +31,20 @@ const PersonForm = (props) => {
 }
 
 const Person = (props) => {
+
   return (
       <div>
           {props.toShow.map(person => {
-              return <p key={person.id}>
-                      {person.name} {person.number}
-                      </p>})
+              return( 
+                    <div key={person.id}>
+                      <p> 
+                        {person.name} {person.number}
+                      </p>
+                      <button onClick={() => props.handleDelete(person.id)}>delete</button>
+                    </div>
+                    )
+          })
+                    
           }
       </div>
     )
@@ -48,27 +57,26 @@ const App = () => {
   const [showFilter, setShowFilter] = useState([])
 
 
-  useEffect(()=> {
-    axios
-        .get('http://localhost:3001/persons')
+  useEffect(() => {
+    dbStorage
+        .getPhone()
         .then(response => {
-          setPersons(response.data)
+          setPersons(response)
         })
   }, [])
+
   const handleSubmit = (event) => {
     event.preventDefault()
     const checkName = persons.find(person => person.name === newName)
     checkName ?
       alert(`${newName} is already added to the phonebook`) :
-      axios.post('http://localhost:3001/persons',
-          { 
+      dbStorage
+          .createPhone({ 
             name:newName,
-            number:newNumber,
-            id: persons.length + 1
+            number:newNumber
           })
           .then(response => {
-            console.log(response)
-            setPersons(persons.concat(response.data))
+            setPersons(persons.concat(response))
             setNewName('')
             setNewNumber('')
           })
@@ -90,6 +98,18 @@ const App = () => {
     setShowFilter(nameFilter)
   }
 
+  const handleDelete = (id) => {
+    const deletePerson = persons.find(person => person.id === id)
+    if (window.confirm(`Delete ${deletePerson.name}?`)) {
+      dbStorage
+        .deletePhone(id)
+        .then(response => {
+          setPersons(persons.filter(person => person.id !== response.data.id))
+          alert('delete successful')
+        })    
+    }
+  }
+
   const toShow = newFilter === '' ? persons : showFilter
 
   return (
@@ -105,7 +125,10 @@ const App = () => {
             handleNumberChange={handleNumberChange}/>
 
         <h2>Numbers</h2>
-        <Person toShow={toShow}/>
+        <Person
+           toShow={toShow}
+           handleDelete={handleDelete}
+        />
       </div>
   )
 }
