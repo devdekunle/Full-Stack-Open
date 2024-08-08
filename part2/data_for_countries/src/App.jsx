@@ -29,6 +29,7 @@ const App = () => {
       setCountriesToShow(filter)
   }
 
+  
   const handleShowView = (country) => {
     const countryToShow = []
     countryToShow.push(country)
@@ -41,5 +42,6 @@ const App = () => {
     </div>
     )
 } 
+
 
 export default App

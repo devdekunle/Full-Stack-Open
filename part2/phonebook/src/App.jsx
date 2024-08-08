@@ -101,11 +101,11 @@ const App = () => {
         .deletePhone(id)
         .then(response => {
           setMessageStatus(true)
-          setMessage(`Deleted ${response.data.name}`)
+          setMessage(`Deleted ${deletePerson.name}`)
           setTimeout(() => {
             setMessage(null)
           }, 5000)
-          setPersons(persons.filter(person => person.id !== response.data.id))
+          setPersons(persons.filter(person => person.id !== id))
         })
         .catch(error => {
           console.log(error)
